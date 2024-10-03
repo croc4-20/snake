@@ -63,11 +63,14 @@ export default {
     ],
   },
   resolve: {
+      alias: {
+    '~': path.resolve(__dirname, 'web'),  // Ensure this is correct
+  },
     extensions: ['.ts', '.js'],
     fallback: {
       vm: require.resolve('vm-browserify'),
       assert: require.resolve('assert/'),
-      util: require.resolve('util/'),
+      util: require.resolve('util/')
       // Add other polyfills if needed
     },
   },
