@@ -21,6 +21,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "inlineSourceMap": true,
-    "importHelpers": true
-  }
+    "importHelpers": true,
+    "baseUrl": "./", // Required to use paths
+    "paths": {
+      "~/*": ["./web/*"] // Map "~/" to your "web" directory
+    }
+  },
+  "include": ["./server/**/*.ts", "./web/**/*.ts"], // Ensures TypeScript includes these files
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist from being processed
 }
