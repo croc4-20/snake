@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "start": "NODE_ENV=production node -r 'ts-node/register' ./server/index.ts",
-    "dev": "node -r 'ts-node/register' ./server/dev.ts",
+    "dev": "node -r ts-node/register ./server/dev.ts",
     "build": "parcel ./web/index.html --open",
     "release": "parcel build ./web/index.html",
     "upgrade": "yarn upgrade-interactive"
@@ -30,13 +30,11 @@
     "concurrently": "^3.6.1",
     "eventemitter3": "^2.0.2",
     "ip": "^1.1.5",
-    "ts-node": "^7.0.0",
-    "typescript": "^2.2.2",
     "ws": "^3.3.2"
   },
   "author": "wanghx",
   "license": "MIT",
-   "devDependencies": {
+  "devDependencies": {
     "cross-env": "^7.0.3",
     "es6-shim": "^0.35.1",
     "nodemon": "^1.18.3",
