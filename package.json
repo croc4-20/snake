@@ -35,7 +35,6 @@
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
     "ip": "^1.1.5",
-    "socket.io": "^4.8.0",
     "ts-loader": "^9.5.1",
     "tslib": "^2.7.0",
     "typescript": "^5.6.2",
