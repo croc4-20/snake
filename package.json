@@ -8,6 +8,7 @@
     "dev": "node -r ts-node/register ./server/dev.ts",
     "build": "parcel ./web/index.html --open",
     "release": "parcel build ./web/index.html",
+    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
     "upgrade": "yarn upgrade-interactive"
   },
   "keywords": [
