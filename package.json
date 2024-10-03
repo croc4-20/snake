@@ -5,11 +5,10 @@
   "main": "",
   "scripts": {
     "start": "NODE_ENV=production node -r 'ts-node/register' ./server/index.ts",
-    "dev": "node -r ts-node/register ./server/dev.ts",
-    "build": "parcel ./web/index.html --open",
-    "release": "parcel build ./web/index.html",
-    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
-    "upgrade": "yarn upgrade-interactive"
+    "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
+    "build": "webpack --config webpack.slither.config.mjs.js",
+    "release": "webpack --config webpack.slither.config.mjs.js --mode production",
+    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
   "keywords": [
     "game",
