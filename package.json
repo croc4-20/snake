@@ -30,6 +30,7 @@
     "chokidar": "^2.0.4",
     "concurrently": "^3.6.1",
     "eventemitter3": "^2.0.2",
+    "html-webpack-plugin": "^5.6.0",
     "ip": "^1.1.5",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4",
