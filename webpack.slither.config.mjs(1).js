@@ -2,12 +2,14 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { createRequire } from 'module';
 
+const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
-  context: path.resolve(__dirname, 'miniGames/slitherSnake/slither/web'),
+  context: path.resolve(__dirname, 'web'),
   entry: './main.ts',
   output: {
     filename: 'slither.bundle.js',
@@ -45,7 +47,12 @@ export default {
                   type: 'src',
                   filter: (tag, attribute, attributes) => {
                     const src = attributes.src || '';
-                    return !(src.startsWith('/') || src.startsWith('../dist/'));
+                    return !(
+                      src.startsWith('https://') ||
+                      src.startsWith('http://') ||
+                      src.startsWith('/socket.io/') ||
+                      src.startsWith('../dist/')
+                    );
                   },
                 },
               ],
