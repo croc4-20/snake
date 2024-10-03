@@ -13,14 +13,12 @@ if (module && module.hot) {
   });
 }
 
-const raf: (callback: FrameRequestCallback) => {} =
-window.requestAnimationFrame(callback);
 const canvas: HTMLCanvasElement = document.getElementById('cas') as HTMLCanvasElement;
 let isInit: boolean = false;
 
 // player id
 let playerId: number | undefined;
-
+let animationId: number;
 // judge player is an observer or not
 const isObserver: boolean = window.location.href.indexOf('observer=true') >= 0;
 
@@ -258,7 +256,7 @@ function animate(): void {
     }
   }
 
-  raf(animate);
+  animationId = window.requestAnimationFrame(animate);
 }
 
 // send data
