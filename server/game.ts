@@ -1,10 +1,11 @@
-import WebSocket from 'ws';
+import { Server } from 'socket.io';
 import * as config from '../web/common/config';
 import * as utils from '../web/common/utils';
-const WebSocketServer = WebSocket.Server;
-let wss;
-let gameLoop;
-let stack = [];
+import http from 'http';
+
+let io: Server;
+let gameLoop: NodeJS.Timer;
+let stack: any[] = [];
 let idKey = 0;
 
 function startGameLoop() {
@@ -16,85 +17,76 @@ function startGameLoop() {
       return;
     }
 
-    broadcast(
-      utils.encode({
-        opt: config.CMD_SYNC_OTHER_COORD,
-        data: stack,
-      }),
-    );
+    // broadcast to all clients
+    io.emit('sync-coord', {
+      opt: config.CMD_SYNC_OTHER_COORD,
+      data: stack,
+    });
 
     stack.length = 0;
   }, 100);
 }
 
 export function startServer() {
-  if (wss) {
-    throw new Error('ws server are already created!');
-  }
+  const server = http.createServer();
+  io = new Server(server, { cors: { origin: '*' } }); // Allow CORS
 
-  wss = new WebSocketServer({ port: config.socketPort });
-  console.log(`listen port ${config.socketPort}`);
+  console.log(`Server is listening on port ${config.socketPort}`);
 
-  // start gameLoop
+  // Start game loop
   startGameLoop();
 
-  wss.on('connection', (ws) => {
-    console.log('socket connected');
-    ws.binaryType = 'arraybuffer';
-    ws.elements = new Map();
+  // Set up connection event
+  io.on('connection', (socket) => {
+    console.log('Socket connected:', socket.id);
+    socket.data.elements = new Map();
 
-    ws.on('error', () => {
-      console.log('error');
-    });
+    socket.on('disconnect', () => {
+      console.log('Socket disconnected:', socket.id);
 
-    ws.on('close', () => {
-      console.log('disconnect!');
-
-      if (!ws.playerId) {
+      if (!socket.data.playerId) {
         return;
       }
 
-      broadcast(
-        utils.encode({
-          opt: config.CMD_LOSE_CONNECT,
-          data: {
-            type: utils.SNAKE_TYPE,
-            packet: { id: ws.playerId },
-          },
-        }),
-      );
+      // Inform all clients about the disconnection
+      io.emit('lose-connect', {
+        opt: config.CMD_LOSE_CONNECT,
+        data: {
+          type: utils.SNAKE_TYPE,
+          packet: { id: socket.data.playerId },
+        },
+      });
 
-      wss.clients.forEach((client) => {
-        if (client.elements.has(ws.playerId)) {
-          client.elements.delete(ws.playerId);
+      // Remove the player from all clients
+      io.sockets.sockets.forEach((client) => {
+        if (client.data.elements.has(socket.data.playerId)) {
+          client.data.elements.delete(socket.data.playerId);
         }
       });
     });
 
-    ws.on('message', (buf) => {
+    socket.on('message', (buf) => {
       const obj = utils.decode(buf);
       switch (obj.opt) {
         case config.CMD_INIT:
           const packet = obj.data[0].packet;
-          ws.frameWidth = packet.width;
-          ws.frameHeight = packet.height;
-          ws.playerId = idKey++;
-          ws.name = obj.name;
+          socket.data.frameWidth = packet.width;
+          socket.data.frameHeight = packet.height;
+          socket.data.playerId = idKey++;
+          socket.data.name = obj.name;
 
-          // init response
-          ws.send(
-            utils.encode({
-              opt: config.CMD_INIT_ACK,
-              data: {
-                type: utils.SNAKE_TYPE,
-                packet: {
-                  id: ws.playerId,
-                  x: ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2),
-                  y: ~~(Math.random() * (config.MAP_HEIGHT - 100) + 100 / 2),
-                },
+          // Send init response to the client
+          socket.emit('init-ack', {
+            opt: config.CMD_INIT_ACK,
+            data: {
+              type: utils.SNAKE_TYPE,
+              packet: {
+                id: socket.data.playerId,
+                x: ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2),
+                y: ~~(Math.random() * (config.MAP_HEIGHT - 100) + 100 / 2),
               },
-            }),
-          );
+            },
+          });
           break;
 
         case config.CMD_SYNC_MAIN_COORD:
@@ -106,10 +98,13 @@ export function startServer() {
       }
     });
   });
+
+  // Start server
+  server.listen(config.socketPort, () => {
+    console.log(`Socket.IO server running on port ${config.socketPort}`);
+  });
 }
 
-function broadcast(data) {
-  wss.clients.forEach((client) => {
-    client.send(data);
-  });
+function broadcast(data: any) {
+  io.emit('broadcast', data); // Emit to all connected clients
 }

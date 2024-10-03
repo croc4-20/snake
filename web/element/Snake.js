@@ -1,0 +1,237 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CustomSnake = exports.Snake = exports.Movement = void 0;
+const config_1 = require("~/common/config");
+const imageStore_1 = require("~/libs/imageStore");
+const main_1 = require("~/main");
+const Base_1 = require("./Base");
+class Movement {
+    constructor(x, y, speed, angle) {
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.angle = angle;
+    }
+}
+exports.Movement = Movement;
+class Snake extends Base_1.Base {
+    constructor(options) {
+        super(options);
+        this.point = 0;
+        this.isSpeedUp = false;
+        this.fillColor = '';
+        this.stopped = false;
+        // save snake's movement
+        this.movementQueue = [];
+        this.speed = config_1.SPEED;
+        this.oldSpeed = config_1.SPEED;
+        this.turnSpeed = 0.06;
+        this.vx = 0;
+        this.vy = 0;
+        this.fillColor = options.fillColor || '#fff';
+        this.toAngle = this.angle = (options.angle || 0) + config_1.BASE_ANGLE;
+        this.length = options.length || 0;
+        this.updateSize();
+        this.velocity();
+    }
+    updateSize(added = 0) {
+        this.width += added;
+        this.height += added;
+        this.length += added * 50;
+        this.turnSpeed -= added / 1000;
+        this.img = (0, imageStore_1.getSnakeHeader)(this.width, this.height);
+        this.movementQueueLen = Math.ceil(this.length / this.oldSpeed);
+    }
+    // move to new position
+    moveTo(nx, ny) {
+        const x = nx - this.x;
+        const y = this.y - ny;
+        let angle = Math.atan(Math.abs(x / y));
+        // calculate angle, value is 0-360
+        if (x > 0 && y < 0) {
+            angle = Math.PI - angle;
+        }
+        else if (x < 0 && y < 0) {
+            angle = Math.PI + angle;
+        }
+        else if (x < 0 && y > 0) {
+            angle = Math.PI * 2 - angle;
+        }
+        const oldAngle = Math.abs(this.toAngle % (Math.PI * 2));
+        // number of turns
+        let rounds = ~~(this.toAngle / (Math.PI * 2));
+        this.toAngle = angle;
+        if (oldAngle >= Math.PI * 3 / 2 && this.toAngle <= Math.PI / 2) {
+            // move from fourth quadrant to first quadrant
+            rounds++;
+        }
+        else if (oldAngle <= Math.PI / 2 && this.toAngle >= Math.PI * 3 / 2) {
+            // move from first quadrant to fourth quadrant
+            rounds--;
+        }
+        // calculate the real angle by rounds
+        this.toAngle += rounds * Math.PI * 2;
+    }
+    // calculate horizontal speed and vertical speed by angle of snake header
+    velocity() {
+        const angle = this.angle % (Math.PI * 2);
+        const vx = Math.abs(this.speed * Math.sin(angle));
+        const vy = Math.abs(this.speed * Math.cos(angle));
+        if (angle < Math.PI / 2) {
+            this.vx = vx;
+            this.vy = -vy;
+        }
+        else if (angle < Math.PI) {
+            this.vx = vx;
+            this.vy = vy;
+        }
+        else if (angle < Math.PI * 3 / 2) {
+            this.vx = -vx;
+            this.vy = vy;
+        }
+        else {
+            this.vx = -vx;
+            this.vy = -vy;
+        }
+    }
+    // turn around
+    turnAround() {
+        const angleDistance = this.toAngle - this.angle;
+        if (Math.abs(angleDistance) <= this.turnSpeed) {
+            // reset angle
+            this.toAngle = this.angle = config_1.BASE_ANGLE + this.toAngle % (Math.PI * 2);
+        }
+        else {
+            this.angle += Math.sign(angleDistance) * this.turnSpeed;
+        }
+    }
+    speedUp() {
+        if (this.isSpeedUp) {
+            return;
+        }
+        this.isSpeedUp = true;
+        this.oldSpeed = this.speed;
+        this.speed *= 2;
+    }
+    speedDown() {
+        if (!this.isSpeedUp) {
+            return;
+        }
+        this.isSpeedUp = false;
+        this.speed = this.oldSpeed;
+    }
+    // eat food
+    eat(food) {
+        this.point += food.point;
+        // add points
+        const added = food.point / 200;
+        this.updateSize(added);
+        return added;
+    }
+    // snake action
+    action() {
+        if (this.stopped) {
+            return;
+        }
+        // save movement
+        this.movementQueue.push(new Movement(this.x, this.y, this.speed, this.angle));
+        if (this.movementQueue.length > this.movementQueueLen) {
+            this.movementQueue.shift();
+        }
+        this.turnAround();
+        this.velocity();
+        this.x += this.vx;
+        this.y += this.vy;
+        // avoid moving to outside
+        main_1.gameMap.limit(this);
+    }
+    // render snake
+    render() {
+        main_1.gameMap.ctx.save();
+        main_1.gameMap.ctx.beginPath();
+        main_1.gameMap.ctx.moveTo(this.paintX, this.paintY);
+        // stroke body
+        let wholeLength = this.length;
+        if (this.movementQueue.length) {
+            let i = this.movementQueue.length - 1;
+            while (i) {
+                const movement = this.movementQueue[i];
+                let x = movement.x;
+                let y = movement.y;
+                if (wholeLength > 0 && wholeLength < movement.speed) {
+                    const lm = this.movementQueue[i + 1] || this;
+                    const ratio = wholeLength / movement.speed;
+                    x = lm.x - (lm.x - x) * ratio;
+                    y = lm.y - (lm.y - y) * ratio;
+                }
+                else if (wholeLength < 0) {
+                    break;
+                }
+                i--;
+                wholeLength -= movement.speed;
+                main_1.gameMap.ctx.lineTo(main_1.gameMap.view.relativeX(x), main_1.gameMap.view.relativeY(y));
+            }
+        }
+        main_1.gameMap.ctx.lineCap = 'round';
+        main_1.gameMap.ctx.lineJoin = 'round';
+        main_1.gameMap.ctx.strokeStyle = this.fillColor;
+        main_1.gameMap.ctx.lineWidth = this.width;
+        main_1.gameMap.ctx.stroke();
+        main_1.gameMap.ctx.restore();
+        // draw header
+        main_1.gameMap.ctx.save();
+        main_1.gameMap.ctx.translate(this.paintX, this.paintY);
+        main_1.gameMap.ctx.rotate(this.angle);
+        main_1.gameMap.ctx.drawImage(this.img, -this.paintWidth / 2, -this.paintHeight / 2, this.paintWidth, this.paintHeight);
+        main_1.gameMap.ctx.restore();
+    }
+}
+exports.Snake = Snake;
+class CustomSnake extends Snake {
+    constructor() {
+        super(...arguments);
+        this.moveList = [];
+        this.animateStep = 1;
+    }
+    // move to new position
+    sync(newSize, length, movement) {
+        const added = newSize - this.width;
+        this.length = length;
+        this.updateSize(added);
+        this.moveList.push(movement);
+    }
+    // snake action
+    action() {
+        if (this.stopped || !this.moveList.length) {
+            return;
+        }
+        // save movement
+        if (this.lastMovement) {
+            this.movementQueue.push(this.lastMovement);
+            if (this.movementQueue.length > this.movementQueueLen) {
+                this.movementQueue.shift();
+            }
+        }
+        const len = this.moveList.length;
+        const start = this.moveList.length - this.animateStep;
+        this.moveList = this.moveList.slice(0, (start < 0 ? 0 : start) + 1);
+        const movement = this.moveList.shift();
+        if (!movement) {
+            return;
+        }
+        this.lastMovement = movement;
+        this.moveTo(movement.x, movement.y);
+        this.toAngle = this.angle = config_1.BASE_ANGLE + this.toAngle % (Math.PI * 2);
+        this.x = movement.x;
+        this.y = movement.y;
+        this.speed = movement.speed;
+        if (len > 6) {
+            this.animateStep = 2;
+        }
+        else {
+            this.animateStep = 1;
+        }
+    }
+}
+exports.CustomSnake = CustomSnake;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiU25ha2UuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJTbmFrZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFBQSw0Q0FBb0Q7QUFDcEQsa0RBQW1EO0FBQ25ELGlDQUFpQztBQUNqQyxpQ0FBMkM7QUFTM0MsTUFBYSxRQUFRO0lBQ25CLFlBQ1MsQ0FBUyxFQUNULENBQVMsRUFDVCxLQUFhLEVBQ2IsS0FBYTtRQUhiLE1BQUMsR0FBRCxDQUFDLENBQVE7UUFDVCxNQUFDLEdBQUQsQ0FBQyxDQUFRO1FBQ1QsVUFBSyxHQUFMLEtBQUssQ0FBUTtRQUNiLFVBQUssR0FBTCxLQUFLLENBQVE7SUFDbEIsQ0FBQztDQUNOO0FBUEQsNEJBT0M7QUFFRCxNQUFhLEtBQU0sU0FBUSxXQUFJO0lBcUI3QixZQUFZLE9BQXFCO1FBQy9CLEtBQUssQ0FBQyxPQUFPLENBQUMsQ0FBQztRQXBCVixVQUFLLEdBQVcsQ0FBQyxDQUFDO1FBQ2xCLGNBQVMsR0FBWSxLQUFLLENBQUM7UUFDM0IsY0FBUyxHQUFXLEVBQUUsQ0FBQztRQUV2QixZQUFPLEdBQVksS0FBSyxDQUFDO1FBRWhDLHdCQUF3QjtRQUNqQixrQkFBYSxHQUFlLEVBQUUsQ0FBQztRQUkvQixVQUFLLEdBQVcsY0FBSyxDQUFDO1FBQ3RCLGFBQVEsR0FBVyxjQUFLLENBQUM7UUFHeEIsY0FBUyxHQUFXLElBQUksQ0FBQztRQUN6QixPQUFFLEdBQVcsQ0FBQyxDQUFDO1FBQ2YsT0FBRSxHQUFXLENBQUMsQ0FBQztRQUlyQixJQUFJLENBQUMsU0FBUyxHQUFHLE9BQU8sQ0FBQyxTQUFTLElBQUksTUFBTSxDQUFDO1FBQzdDLElBQUksQ0FBQyxPQUFPLEdBQUcsSUFBSSxDQUFDLEtBQUssR0FBRyxDQUFDLE9BQU8sQ0FBQyxLQUFLLElBQUksQ0FBQyxDQUFDLEdBQUcsbUJBQVUsQ0FBQztRQUM5RCxJQUFJLENBQUMsTUFBTSxHQUFHLE9BQU8sQ0FBQyxNQUFNLElBQUksQ0FBQyxDQUFDO1FBQ2xDLElB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
