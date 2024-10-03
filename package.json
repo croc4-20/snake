@@ -4,9 +4,9 @@
   "description": "slither game",
   "main": "",
   "scripts": {
-    "start": "NODE_ENV=production node -r 'ts-node/register' ./server/index.ts",
+    "start": "NODE_ENV=production node ./build/server/index.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
-    "build": "webpack --config webpack.slither.config.mjs.js",
+    "build": "tsc && webpack --config webpack.slither.config.mjs.js",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
