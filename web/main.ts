@@ -14,7 +14,7 @@ if (module && module.hot) {
 }
 
 const raf: (callback: FrameRequestCallback) => {} =
-  window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+window.requestAnimationFrame(callback);
 const canvas: HTMLCanvasElement = document.getElementById('cas') as HTMLCanvasElement;
 let isInit: boolean = false;
 
