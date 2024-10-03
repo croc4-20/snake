@@ -39,8 +39,6 @@
     "es6-shim": "^0.35.1",
     "nodemon": "^1.18.3",
     "opn": "^5.1.0",
-    "parcel-bundler": "^1.9.3",
-    "parcel-plugin-typescript": "^1.0.0",
     "socket.io": "^4.8.0",
     "socket.io-client": "^4.8.0",
     "ts-node": "^10.9.2",
