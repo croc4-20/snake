@@ -31,6 +31,10 @@
   "./server/index.ts",
   "./web/main.ts"
 ],
-  "include": ["./server/**/*.ts", "./web/**/*.ts"], // Ensures TypeScript includes these files
+ "include": [
+  "server/**/*.ts",
+  "web/**/*.ts",
+  "./global.d.ts"
+], // Ensures TypeScript includes these files
   "exclude": ["node_modules", "dist"] // Exclude node_modules and dist from being processed
 }
