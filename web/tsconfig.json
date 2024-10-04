@@ -2,6 +2,10 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "es5",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "outDir": "./build",
     "lib": ["dom", "es2017"],
     "types": ["es6-shim"],
     "baseUrl": ".",
@@ -9,6 +13,10 @@
       "~/*": ["./*"]
     }
   },
+  "include": [
+    "server/**/*.ts",
+    "web/**/*.ts"
+  ],
   "parcelTsPluginOptions": {
     "transpileOnly": false
   }
