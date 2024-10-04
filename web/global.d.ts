@@ -11,3 +11,8 @@ interface NodeProcess {
 
 declare const process: NodeProcess;
 declare const module: NodeModule;
+declare var module: {
+  hot?: {
+    accept(callback?: () => void): void;
+  };
+};
