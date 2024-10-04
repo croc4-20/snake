@@ -21,12 +21,11 @@
   },
   "dependencies": {
     "@types/chokidar": "^1.7.5",
-    "@types/es6-shim": "^0.31.33",
     "@types/ip": "^0.0.31",
     "@types/node": "^10.5.7",
+    "@types/socket.io": "^3.0.2",
     "@types/stats.js": "^0.17.0",
     "@types/ws": "^3.2.0",
-     "@types/socket.io": "^3.0.2",
     "assert": "^2.1.0",
     "buffer": "^5.0.8",
     "chokidar": "^2.0.4",
@@ -47,6 +46,7 @@
   "author": "wanghx",
   "license": "MIT",
   "devDependencies": {
+    "@types/es6-shim": "^0.31.45",
     "cross-env": "^7.0.3",
     "nodemon": "^1.18.3",
     "opn": "^5.1.0",
