@@ -1,8 +1,8 @@
-interface NodeModule {
-  hot?: {
-    accept(callback?: () => void): void;
-    dispose(callback?: () => void): void;
-  };
+declare namespace NodeJS {
+  interface Module {
+    hot?: {
+      accept(dependencies?: string | string[], callback?: () => void): void;
+      dispose(callback: () => void): void;
+    };
+  }
 }
-
-declare const module: NodeModule;
