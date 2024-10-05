@@ -13,7 +13,7 @@ export const CMD_LOSE_CONNECT = 104;             // lose connection
 
 export const port = 9999;                        // server port
 export const devPort = port - 1;                 // development port
-// export const socketPort = port - 2;              // websocket port
+export const socketPort = 9999;            // websocket port
 
 export const MAP_WIDTH = 5000;                   // map width
 export const MAP_HEIGHT = 5000;                  // map height
