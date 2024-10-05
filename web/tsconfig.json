@@ -1,14 +1,14 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./global.d.ts"],
+    // "typeRoots": ["./node_modules/@types", "./global.d.ts"],
     "target": "es5",
     "module": "commonjs",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "outDir": "./build",
     "lib": ["dom", "es2017"],
-    "types": ["es6-shim", "webpack-env"],
+    // "types": ["es6-shim", "webpack-env"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
