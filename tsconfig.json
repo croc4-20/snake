@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "types": ["es6-shim", "webpack-env"],
+    // "types": ["es6-shim", "webpack-env"],
     "strict": true,
     "moduleResolution": "node",
     "noImplicitAny": false,
