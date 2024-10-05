@@ -10,7 +10,6 @@
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
-  "type": "module",
   "keywords": [
     "game",
     "slither",
