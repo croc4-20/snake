@@ -267,10 +267,10 @@ function animate(): void {
 
 // send data
 function sendData(opt: number, type: number, packet: any): void {
-  ws.send(utils.encode({
-    opt,
-    data: { type, packet },
-  }));
+  socket.emit('customEvent', {
+  opt,
+  data: { type, packet },
+});
 }
 
 /**
