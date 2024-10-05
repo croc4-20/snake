@@ -87,16 +87,16 @@ socket.on('disconnect', () => {
 socket.on('message', (data) => 
 {
   
-  const buf = e.data;
+  let buf = data;
 
-    if (data instanceof ArrayBuffer) {
-        data = utils.decode(data);
-    } else {
-        data = JSON.parse(data);
-    }
+    if (buf instanceof ArrayBuffer) {
+    buf = utils.decode(buf);  // Assuming utils.decode is a function to process binary data
+  } else {
+    buf = JSON.parse(buf);    // If it's JSON, parse it
+  }
 
   let packet;
-  switch (data.opt) {
+  switch (buf.opt) {
     case config.CMD_INIT_ACK:
       packet = data.data[0].packet;
       playerId = packet.id;
@@ -109,7 +109,7 @@ socket.on('message', (data) =>
       }
 
       let snake: CustomSnake;
-      data.data.forEach((item: any) => {
+      buf.data.forEach((item: any) => {
         packet = item.packet;
         if (item.type === utils.SNAKE_TYPE) {
           if (playerId === packet.id) {
@@ -143,7 +143,7 @@ socket.on('message', (data) =>
       break;
 
     case config.CMD_LOSE_CONNECT:
-      packet = data.data[0].packet;
+      packet = buf.data[0].packet;
       if (snakes.has(packet.id)) {
         snakes.delete(packet.id);
       }
