@@ -20,13 +20,13 @@
     "~": "./"
   },
   "dependencies": {
-    "@types/es6-shim": "^0.31.45",
-    "@types/webpack-env": "^1.18.5",
     "@types/chokidar": "^1.7.5",
+    "@types/es6-shim": "^0.31.45",
     "@types/ip": "^0.0.31",
     "@types/node": "^10.5.7",
     "@types/socket.io": "^3.0.2",
     "@types/stats.js": "^0.17.0",
+    "@types/webpack-env": "^1.18.5",
     "@types/ws": "^3.2.0",
     "assert": "^2.1.0",
     "buffer": "^5.0.8",
@@ -48,7 +48,6 @@
   "author": "wanghx",
   "license": "MIT",
   "devDependencies": {
-   
     "cross-env": "^7.0.3",
     "nodemon": "^1.18.3",
     "opn": "^5.1.0",
