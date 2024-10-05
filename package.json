@@ -6,8 +6,9 @@
   "scripts": {
     "start": "NODE_ENV=production node ./build/server/index.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
-    "build": "tsc && webpack --config webpack.slither.config.mjs.js",
+    "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
+    "copy-server": "copyfiles -u 1 server/index.js build/server",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
   "type": "module",
