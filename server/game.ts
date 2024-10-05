@@ -4,7 +4,7 @@ import * as utils from '../web/common/utils';
 import http from 'http';
 
 let io: Server;
-let gameLoop: NodeJS.Timer;
+let gameLoop: NodeJS.Timeout;
 let stack: any[] = [];
 let idKey = 0;
 
