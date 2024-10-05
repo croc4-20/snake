@@ -6,6 +6,7 @@ import { Food } from '~/element/Food';
 import { CustomSnake, Movement, Snake } from '~/element/Snake';
 import { GameMap } from '~/framework/GameMap';
 import { Observer } from '~/framework/Observer';
+import { io } from 'socket.io-client';
 
 if (module && module.hot) {
   module.hot.accept(() => {
@@ -38,6 +39,7 @@ const mouseCoords: { x?: number; y?: number } = {};
 // snakes map
 const snakes: Map<any, CustomSnake> = new Map();
 
+
 // keycode
 const enum KeyCodes {
   W = 87,
@@ -53,41 +55,45 @@ const enum KeyCodes {
 const foods: Food[] = [];
 
 // websocket
-const ws: WebSocket = new WebSocket(`ws://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`);
-ws.binaryType = 'arraybuffer';
+
+const socket = io(`http://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`, {
+    transports: ['websocket'], // Use WebSocket transport
+});
 
 // websocket connected
-ws.onopen = () => {
-  sendData(config.CMD_INIT, utils.VIEW_TYPE, {
-    width: vWidth,
-    height: vHeight,
-  });
-};
+socket.on('connect', () => {
+    // When the socket is connected
+    sendData(config.CMD_INIT, utils.VIEW_TYPE, {
+        width: vWidth,
+        height: vHeight,
+    });
+});
 
-ws.onerror = () => {
-  console.log('error');
-};
+socket.on('error', () => {
+    console.log('error');
+});
 
-ws.onclose = () => {
-  if (isInit) {
-    return;
-  }
+socket.on('disconnect', () => {
+    if (isInit) {
+        return;
+    }
 
-  const x = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
-  const y = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
-  initGame(x, y);
-};
+    const x = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
+    const y = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
+    initGame(x, y);
+});
 
 // receive data
-ws.onmessage = (e) => {
+socket.on('message', (data) => 
+{
   let data;
   const buf = e.data;
 
-  if (buf instanceof ArrayBuffer) {
-    data = utils.decode(buf);
-  } else {
-    data = JSON.parse(buf);
-  }
+    if (data instanceof ArrayBuffer) {
+        data = utils.decode(data);
+    } else {
+        data = JSON.parse(data);
+    }
 
   let packet;
   switch (data.opt) {
@@ -146,7 +152,7 @@ ws.onmessage = (e) => {
     default:
       break;
   }
-};
+});
 
 /**
  * game init

@@ -34,28 +34,33 @@ const snakes = new Map();
 // save food object
 const foods = [];
 // websocket
-const ws = new WebSocket(`ws://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`);
-ws.binaryType = 'arraybuffer';
+const socket = io(`http://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`, {
+    transports: ['websocket'], // Use WebSocket transport
+});
 // websocket connected
-ws.onopen = () => {
+socket.on('connect', () => {
+    // When the socket is connected
     sendData(config.CMD_INIT, utils.VIEW_TYPE, {
         width: vWidth,
         height: vHeight,
     });
-};
-ws.onerror = () => {
+});
+socket.on('error', () => {
     console.log('error');
-};
-ws.onclose = () => {
+});
+
+socket.on('disconnect', () => {
     if (isInit) {
         return;
     }
+
     const x = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
     const y = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
     initGame(x, y);
-};
+});
 // receive data
-ws.onmessage = (e) => {
+socket.on('message', (data) => 
+{
     let data;
     const buf = e.data;
     if (buf instanceof ArrayBuffer) {
@@ -113,7 +118,7 @@ ws.onmessage = (e) => {
         default:
             break;
     }
-};
+});
 /**
  * game init
  */
