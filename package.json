@@ -9,7 +9,8 @@
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
     "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
-    "copy-server": "copyfiles -u 1 server/index.js build/server 'web/common/*.js' build/web/common",
+    "copy-server": "copyfiles -u 1 server/index.js build/server",
+    "copy-config": "copyfiles -u 1 'web/common/*.js' build/web/common",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
   "type": "module",
