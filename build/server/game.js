@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
-import * as config from '../web/common/config';
-import * as utils from '../web/common/utils';
+import * as config from '../web/common/config.js';
+import * as utils from '../web/common/utils.js';
 import http from 'http';
 let io;
 let gameLoop;
