@@ -4,6 +4,7 @@
   "description": "slither game",
   "main": "",
   "scripts": {
+    "clean": "rimraf build",
     "start": "NODE_ENV=production node ./build/server/index.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
     "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
