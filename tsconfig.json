@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "commonjs",
+    "module": "ESNext",
+    "target": "ES6",
     // "types": ["es6-shim", "webpack-env"],
     "strict": true,
     "moduleResolution": "node",
