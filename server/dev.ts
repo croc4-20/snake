@@ -1,5 +1,6 @@
-import child_process from 'child_process';
+// import child_process from 'child_process';
 import chokidar from 'chokidar';
+import { ChildProcess } from 'child_process';
 import ip from 'ip';
 import path from 'path';
 const address = ip.address();
