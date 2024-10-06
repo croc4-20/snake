@@ -34,9 +34,8 @@ const snakes = new Map();
 // save food object
 const foods = [];
 // websocket
-const socket = io(`http://${window.location.hostname}:${window.location.port}`, {
-    transports: ['websocket'], // Use WebSocket transport
-});
+const socket = io(`${window.location.origin}`);
+
 // websocket connected
 socket.on('connect', () => {
     // When the socket is connected
