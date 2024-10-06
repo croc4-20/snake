@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { createRequire } from 'module';
+import { DefinePlugin } from 'webpack';
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -79,6 +80,11 @@ export default {
       template: './index.html',
       inject: 'body',
       scriptLoading: 'defer',
+    }),
+    new DefinePlugin({
+      'process.env.LOCAL_IP': JSON.stringify(process.env.LOCAL_IP || '127.0.0.1'),  // Defaults to localhost if undefined
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      // Add any other environment variables here
     }),
   ],
   mode: process.env.NODE_ENV || 'development',
