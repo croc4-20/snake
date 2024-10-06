@@ -2,6 +2,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack'; 
 import { createRequire } from 'module';
 import { DefinePlugin } from 'webpack';
 
