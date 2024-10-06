@@ -7612,7 +7612,8 @@ var KeyCodes;
 // save food object
 var foods = [];
 // websocket
-var ws = new WebSocket("ws://" + ("192.168.10.105" || '127.0.0.1') + ":" + config.socketPort);
+var protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+var ws = new WebSocket(protocol + window.location.hostname + ":" + config.socketPort);
 ws.binaryType = 'arraybuffer';
 // websocket connected
 ws.onopen = function () {
