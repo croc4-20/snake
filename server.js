@@ -14,7 +14,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Serve main application
-app.use(express.static(path.join(__dirname, 'dist/slither')));
+app.use(express.static(path.join(__dirname, 'dist')));
+
 
 app.use((req, res, next) => {
   if (req.url.endsWith('.ts')) {
