@@ -15,7 +15,7 @@ export default {
     filename: 'slither.bundle.js',
     path: path.resolve(__dirname, 'dist/slither'),
     clean: true,
-    publicPath: '/miniGames/slitherSnake/slither/dist/',
+    publicPath: '/',
   },
   module: {
     rules: [
