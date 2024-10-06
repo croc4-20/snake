@@ -14,7 +14,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Serve main application
-app.use(express.static(path.join(__dirname, 'dist')));
+
+app.use(express.static(path.join(__dirname, 'dist/slither')));
 
 
 app.use((req, res, next) => {
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 // Serve Slither game static files
-app.use('/miniGames/slitherSnake/slither/dist', express.static(path.join(__dirname, 'miniGames/slitherSnake/slither/dist')));
+// app.use('/miniGames/slitherSnake/slither/dist', express.static(path.join(__dirname, 'miniGames/slitherSnake/slither/dist')));
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
