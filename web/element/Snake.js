@@ -1,10 +1,11 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomSnake = exports.Snake = exports.Movement = void 0;
-const config_1 = require("~/common/config");
-const imageStore_1 = require("~/libs/imageStore");
-const main_1 = require("~/main");
-const Base_1 = require("./Base");
+
+import { SPEED, BASE_ANGLE } from "~/common/config";
+import { getSnakeHeader } from "~/libs/imageStore";
+import { gameMap } from "~/main";
+import { Base } from "./Base";
+
 class Movement {
     constructor(x, y, speed, angle) {
         this.x = x;
@@ -14,7 +15,8 @@ class Movement {
     }
 }
 exports.Movement = Movement;
-class Snake extends Base_1.Base {
+
+class Snake extends Base {
     constructor(options) {
         super(options);
         this.point = 0;
@@ -23,13 +25,13 @@ class Snake extends Base_1.Base {
         this.stopped = false;
         // save snake's movement
         this.movementQueue = [];
-        this.speed = config_1.SPEED;
-        this.oldSpeed = config_1.SPEED;
+        this.speed = SPEED;
+        this.oldSpeed = SPEED;
         this.turnSpeed = 0.06;
         this.vx = 0;
         this.vy = 0;
         this.fillColor = options.fillColor || '#fff';
-        this.toAngle = this.angle = (options.angle || 0) + config_1.BASE_ANGLE;
+        this.toAngle = this.angle = (options.angle || 0) + BASE_ANGLE;
         this.length = options.length || 0;
         this.updateSize();
         this.velocity();
@@ -39,7 +41,7 @@ class Snake extends Base_1.Base {
         this.height += added;
         this.length += added * 50;
         this.turnSpeed -= added / 1000;
-        this.img = (0, imageStore_1.getSnakeHeader)(this.width, this.height);
+        this.img = getSnakeHeader(this.width, this.height);
         this.movementQueueLen = Math.ceil(this.length / this.oldSpeed);
     }
     // move to new position
@@ -50,22 +52,19 @@ class Snake extends Base_1.Base {
         // calculate angle, value is 0-360
         if (x > 0 && y < 0) {
             angle = Math.PI - angle;
-        }
-        else if (x < 0 && y < 0) {
+        } else if (x < 0 && y < 0) {
             angle = Math.PI + angle;
-        }
-        else if (x < 0 && y > 0) {
+        } else if (x < 0 && y > 0) {
             angle = Math.PI * 2 - angle;
         }
         const oldAngle = Math.abs(this.toAngle % (Math.PI * 2));
         // number of turns
         let rounds = ~~(this.toAngle / (Math.PI * 2));
         this.toAngle = angle;
-        if (oldAngle >= Math.PI * 3 / 2 && this.toAngle <= Math.PI / 2) {
+        if (oldAngle >= (Math.PI * 3) / 2 && this.toAngle <= Math.PI / 2) {
             // move from fourth quadrant to first quadrant
             rounds++;
-        }
-        else if (oldAngle <= Math.PI / 2 && this.toAngle >= Math.PI * 3 / 2) {
+        } else if (oldAngle <= Math.PI / 2 && this.toAngle >= (Math.PI * 3) / 2) {
             // move from first quadrant to fourth quadrant
             rounds--;
         }
@@ -80,16 +79,13 @@ class Snake extends Base_1.Base {
         if (angle < Math.PI / 2) {
             this.vx = vx;
             this.vy = -vy;
-        }
-        else if (angle < Math.PI) {
+        } else if (angle < Math.PI) {
             this.vx = vx;
             this.vy = vy;
-        }
-        else if (angle < Math.PI * 3 / 2) {
+        } else if (angle < (Math.PI * 3) / 2) {
             this.vx = -vx;
             this.vy = vy;
-        }
-        else {
+        } else {
             this.vx = -vx;
             this.vy = -vy;
         }
@@ -99,9 +95,8 @@ class Snake extends Base_1.Base {
         const angleDistance = this.toAngle - this.angle;
         if (Math.abs(angleDistance) <= this.turnSpeed) {
             // reset angle
-            this.toAngle = this.angle = config_1.BASE_ANGLE + this.toAngle % (Math.PI * 2);
-        }
-        else {
+            this.toAngle = this.angle = BASE_ANGLE + (this.toAngle % (Math.PI * 2));
+        } else {
             this.angle += Math.sign(angleDistance) * this.turnSpeed;
         }
     }
@@ -143,13 +138,13 @@ class Snake extends Base_1.Base {
         this.x += this.vx;
         this.y += this.vy;
         // avoid moving to outside
-        main_1.gameMap.limit(this);
+        gameMap.limit(this);
     }
     // render snake
     render() {
-        main_1.gameMap.ctx.save();
-        main_1.gameMap.ctx.beginPath();
-        main_1.gameMap.ctx.moveTo(this.paintX, this.paintY);
+        gameMap.ctx.save();
+        gameMap.ctx.beginPath();
+        gameMap.ctx.moveTo(this.paintX, this.paintY);
         // stroke body
         let wholeLength = this.length;
         if (this.movementQueue.length) {
@@ -163,30 +158,30 @@ class Snake extends Base_1.Base {
                     const ratio = wholeLength / movement.speed;
                     x = lm.x - (lm.x - x) * ratio;
                     y = lm.y - (lm.y - y) * ratio;
-                }
-                else if (wholeLength < 0) {
+                } else if (wholeLength < 0) {
                     break;
                 }
                 i--;
                 wholeLength -= movement.speed;
-                main_1.gameMap.ctx.lineTo(main_1.gameMap.view.relativeX(x), main_1.gameMap.view.relativeY(y));
+                gameMap.ctx.lineTo(gameMap.view.relativeX(x), gameMap.view.relativeY(y));
             }
         }
-        main_1.gameMap.ctx.lineCap = 'round';
-        main_1.gameMap.ctx.lineJoin = 'round';
-        main_1.gameMap.ctx.strokeStyle = this.fillColor;
-        main_1.gameMap.ctx.lineWidth = this.width;
-        main_1.gameMap.ctx.stroke();
-        main_1.gameMap.ctx.restore();
+        gameMap.ctx.lineCap = 'round';
+        gameMap.ctx.lineJoin = 'round';
+        gameMap.ctx.strokeStyle = this.fillColor;
+        gameMap.ctx.lineWidth = this.width;
+        gameMap.ctx.stroke();
+        gameMap.ctx.restore();
         // draw header
-        main_1.gameMap.ctx.save();
-        main_1.gameMap.ctx.translate(this.paintX, this.paintY);
-        main_1.gameMap.ctx.rotate(this.angle);
-        main_1.gameMap.ctx.drawImage(this.img, -this.paintWidth / 2, -this.paintHeight / 2, this.paintWidth, this.paintHeight);
-        main_1.gameMap.ctx.restore();
+        gameMap.ctx.save();
+        gameMap.ctx.translate(this.paintX, this.paintY);
+        gameMap.ctx.rotate(this.angle);
+        gameMap.ctx.drawImage(this.img, -this.paintWidth / 2, -this.paintHeight / 2, this.paintWidth, this.paintHeight);
+        gameMap.ctx.restore();
     }
 }
 exports.Snake = Snake;
+
 class CustomSnake extends Snake {
     constructor() {
         super(...arguments);
@@ -221,14 +216,13 @@ class CustomSnake extends Snake {
         }
         this.lastMovement = movement;
         this.moveTo(movement.x, movement.y);
-        this.toAngle = this.angle = config_1.BASE_ANGLE + this.toAngle % (Math.PI * 2);
+        this.toAngle = this.angle = BASE_ANGLE + (this.toAngle % (Math.PI * 2));
         this.x = movement.x;
         this.y = movement.y;
         this.speed = movement.speed;
         if (len > 6) {
             this.animateStep = 2;
-        }
-        else {
+        } else {
             this.animateStep = 1;
         }
     }
