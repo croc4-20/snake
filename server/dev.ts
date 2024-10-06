@@ -3,8 +3,8 @@ import chokidar from 'chokidar';
 import ip from 'ip';
 import path from 'path';
 const address = ip.address();
-let timeout;
-let serverProcess: child_process.ChildProcess;
+let timeout: NodeJS.Timeout;
+let serverProcess: ChildProcess;
 
 // start building
 const buildProcess = child_process.spawn('npm', ['run', 'build'], {
