@@ -36,13 +36,9 @@ function startServerProcess(f?: string) {
       serverProcess.kill('SIGINT');
     }
 
-    serverProcess = child_process.spawn(
-      'node',
-      ['--require', 'ts-node/register', path.resolve(__dirname, './index.ts')],
-      {
-        stdio: [0, 1, 2],
-      },
-    );
+    serverProcess = spawn('node', ['--require', 'ts-node/register', path.resolve(__dirname, './index.ts')], {
+      stdio: [0, 1, 2],
+    });
 
     serverProcess.on('error', () => {
       console.info('server error, restart now');
