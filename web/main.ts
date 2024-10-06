@@ -56,8 +56,8 @@ const foods: Food[] = [];
 
 // websocket
 
-const socket = io(`http://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`, {
-    transports: ['websocket'], // Use WebSocket transport
+const socket = io(window.location.origin, {
+    transports: ['websocket'],
 });
 
 // websocket connected
