@@ -5,14 +5,13 @@
   "main": "",
   "scripts": {
     "clean": "rimraf build",
-   "start": "npm run build && npm run copy-config && NODE_ENV=production node ./build/server/index.js",
+    "start": "npm run build && npm run copy-config && NODE_ENV=production node ./build/server/index.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
-     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
+    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
     "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
     "copy-server": "copyfiles -u 1 server/index.js build/server",
     "copy-config": "copyfiles -u 1 'web/common/*.js' build/web/common"
-   
   },
   "type": "module",
   "keywords": [
@@ -27,7 +26,7 @@
     "@types/chokidar": "^1.7.5",
     "@types/es6-shim": "^0.31.45",
     "@types/ip": "^0.0.31",
-    "@types/node": "^10.5.7",
+    "@types/node": "^22.7.4",
     "@types/socket.io": "^3.0.2",
     "@types/stats.js": "^0.17.0",
     "@types/webpack-env": "^1.18.5",
@@ -36,31 +35,31 @@
     "buffer": "^5.0.8",
     "chokidar": "^2.0.4",
     "concurrently": "^3.6.1",
+    "copyfiles": "^2.4.1",
     "es6-shim": "^0.35.8",
     "eventemitter3": "^2.0.2",
-    "socket.io": "^4.8.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
     "ip": "^1.1.5",
+    "socket.io": "^4.8.0",
+    "socket.io-client": "^4.8.0",
     "ts-loader": "^9.5.1",
     "tslib": "^2.7.0",
     "typescript": "^5.6.2",
     "vm-browserify": "^1.1.2",
-     "socket.io-client": "^4.8.0",
     "webpack": "^5.95.0",
-    "copyfiles": "^2.4.1",
     "webpack-cli": "^5.1.4",
     "ws": "^3.3.2"
   },
   "author": "wanghx",
   "license": "MIT",
-  "devDependencies": { 
+  "devDependencies": {
     "cross-env": "^7.0.3",
+    "eslint": "^7.x.x",
     "nodemon": "^1.18.3",
     "opn": "^5.1.0",
     "socket.io": "^4.8.0",
     "ts-node": "^10.9.2",
-    "tslint": "^5.8.0",
-      "eslint": "^7.x.x"
+    "tslint": "^5.8.0"
   }
 }
