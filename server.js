@@ -16,6 +16,13 @@ const __dirname = path.dirname(__filename);
 // Serve main application
 app.use(express.static(path.join(__dirname, 'dist/slither')));
 
+app.use((req, res, next) => {
+  if (req.url.endsWith('.ts')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  }
+  next();
+});
+
 // Serve Slither game static files
 app.use('/miniGames/slitherSnake/slither/dist', express.static(path.join(__dirname, 'miniGames/slitherSnake/slither/dist')));
 
