@@ -1,54 +1,69 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="format-detection" content="telephone=no, email=no" />
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="HandheldFriendly" content="true">
-  <meta name="MobileOptimized" content="320">
-  <meta name="screen-orientation" content="portrait">
-  <meta name="x5-orientation" content="portrait">
-  <meta name="msapplication-tap-highlight" content="no">
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-
-  <title>slither</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      -webkit-user-select: none;
-    }
-    
-    html,
-    body,
-    #cas {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000;
-    }
-
-    #log {
-      position: absolute;
-      width: 100px;
-      right: 100px;
-      top: 100px;
-      color: #fff;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="log"></div>
-  <canvas id="cas">
-    Your browser do not support canvas! (๑•̀ㅁ•́ฅ)
-  </canvas>
-  <script src="/51117aae6562cb745253.ts"></script>
-<script defer src="/slither.bundle.js"></script></body>
-
-</html>
+Html Webpack Plugin:
+<pre>
+  Error: Child compilation failed:
+  Module not found: Error: Can't resolve 'babel-loader' in 'C:\Users\marti\Documents\GitHub\pixelwar\snake\web'
+  ModuleNotFoundError: Module not found: Error: Can't resolve 'babel-loader' in 'C:\Users\marti\Documents\GitHub\pixelwa  r\snake\web'
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\webpack\lib\Compilation.js:2109:28
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\webpack\lib\NormalModuleFactory.js:908:13
+      at eval (eval at create (C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\tapable\lib\HookCodeFactory.j  s:33:10), <anonymous>:10:1)
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\webpack\lib\NormalModuleFactory.js:333:22
+      at eval (eval at create (C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\tapable\lib\HookCodeFactory.j  s:33:10), <anonymous>:9:1)
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\webpack\lib\NormalModuleFactory.js:638:15
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\webpack\lib\NormalModuleFactory.js:150:10
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\webpack\lib\NormalModuleFactory.js:714:8
+      at C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\neo-async\async.js:2830:7
+      at done (C:\Users\marti\Documents\GitHub\pixelwar\snake\node_modules\neo-async\async.js:2925:13)
+  
+  - Compilation.js:2109 
+    [snake]/[webpack]/lib/Compilation.js:2109:28
+  
+  - NormalModuleFactory.js:908 
+    [snake]/[webpack]/lib/NormalModuleFactory.js:908:13
+  
+  
+  - NormalModuleFactory.js:333 
+    [snake]/[webpack]/lib/NormalModuleFactory.js:333:22
+  
+  
+  - NormalModuleFactory.js:638 
+    [snake]/[webpack]/lib/NormalModuleFactory.js:638:15
+  
+  - NormalModuleFactory.js:150 
+    [snake]/[webpack]/lib/NormalModuleFactory.js:150:10
+  
+  - NormalModuleFactory.js:714 
+    [snake]/[webpack]/lib/NormalModuleFactory.js:714:8
+  
+  - async.js:2830 
+    [snake]/[neo-async]/async.js:2830:7
+  
+  - async.js:2925 done
+    [snake]/[neo-async]/async.js:2925:13
+  
+  - child-compiler.js:174 
+    [snake]/[html-webpack-plugin]/lib/child-compiler.js:174:18
+  
+  - Compiler.js:627 finalCallback
+    [snake]/[webpack]/lib/Compiler.js:627:5
+  
+  - Compiler.js:662 
+    [snake]/[webpack]/lib/Compiler.js:662:11
+  
+  - Compiler.js:1348 
+    [snake]/[webpack]/lib/Compiler.js:1348:17
+  
+  
+  - Hook.js:18 Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+    [snake]/[tapable]/lib/Hook.js:18:14
+  
+  - Compiler.js:1344 
+    [snake]/[webpack]/lib/Compiler.js:1344:33
+  
+  - Compilation.js:2925 finalCallback
+    [snake]/[webpack]/lib/Compilation.js:2925:11
+  
+  - Compilation.js:3238 
+    [snake]/[webpack]/lib/Compilation.js:3238:11
+  
+  
+</pre><script defer src="/slither/slither.bundle.js"></script>
