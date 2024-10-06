@@ -18,7 +18,7 @@ export default {
     filename: 'slither.bundle.js',
     path: path.resolve(__dirname, 'dist/slither'),
     clean: true,
-    publicPath: '/',
+    publicPath: '/slither/'
   },
   module: {
     rules: [
