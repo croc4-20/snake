@@ -14,7 +14,7 @@ import path from 'path'; // Replace require with import
 
 const address = ip.address();
 let timeout: NodeJS.Timeout;
-let serverProcess: ChildProcess;
+let serverProcess: ChildProcess | undefined;
 
 // start building
 const buildProcess = spawn('npm', ['run', 'build'], {
