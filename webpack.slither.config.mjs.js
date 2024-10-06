@@ -2,9 +2,10 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import webpack from 'webpack'; 
+
 import { createRequire } from 'module';
-import { DefinePlugin } from 'webpack';
+import webpack from 'webpack';
+const { DefinePlugin } = webpack;
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
