@@ -95,9 +95,10 @@ export function startServer() {
     });
 
     // Start server
-    server.listen(config.socketPort, () => {
-        console.log(`Socket.IO server running on port ${config.socketPort}`);
-    });
+    const PORT = process.env.PORT || config.socketPort || 9999;  // Ensure it falls back on environment variable
+server.listen(PORT, () => {
+  console.log(`Socket.IO server running on port ${PORT}`);
+});
 }
 
 export function broadcast(data) {
