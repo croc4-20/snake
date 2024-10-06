@@ -7,10 +7,12 @@
 // const path_1 = tslib_1.__importDefault(require("path"));
 // const address = ip_1.default.address();
 
-import { spawn, ChildProcess } from 'child_process'; // Replace require with import
+
+import { spawn } from 'child_process'; // Import the spawn function
+import type { ChildProcess } from 'child_process'; // Import the type ChildProcess
 import chokidar from 'chokidar'; // Replace require with import
 import ip from 'ip'; // Replace require with import
-import path from 'path'; // Replace require with import
+import path from 'path'; 
 
 const address = ip.address();
 let timeout: NodeJS.Timeout;
