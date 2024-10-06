@@ -38,6 +38,7 @@
     "concurrently": "^3.6.1",
     "es6-shim": "^0.35.8",
     "eventemitter3": "^2.0.2",
+    "socket.io": "^4.8.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
     "ip": "^1.1.5",
@@ -58,8 +59,8 @@
     "nodemon": "^1.18.3",
     "opn": "^5.1.0",
     "socket.io": "^4.8.0",
-   
     "ts-node": "^10.9.2",
-    "tslint": "^5.8.0"
+    "tslint": "^5.8.0",
+      "eslint": "^7.x.x"
   }
 }
