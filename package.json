@@ -7,11 +7,12 @@
     "clean": "rimraf build",
    "start": "npm run build && npm run copy-config && NODE_ENV=production node ./build/server/index.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
+     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
     "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
     "copy-server": "copyfiles -u 1 server/index.js build/server",
-    "copy-config": "copyfiles -u 1 'web/common/*.js' build/web/common",
-    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
+    "copy-config": "copyfiles -u 1 'web/common/*.js' build/web/common"
+   
   },
   "type": "module",
   "keywords": [
