@@ -9,7 +9,7 @@ import { Observer } from '~/framework/Observer';
 import { io } from 'socket.io-client';
 
 if (module && module.hot) {
-  module.hot.accept(() => {
+  module.hot.accept(undefined, () => {
     location.reload();
   });
 }

@@ -1,6 +1,6 @@
 // import child_process from 'child_process';
 import chokidar from 'chokidar';
-import { ChildProcess } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import ip from 'ip';
 import path from 'path';
 const address = ip.address();
@@ -8,12 +8,12 @@ let timeout: NodeJS.Timeout;
 let serverProcess: ChildProcess;
 
 // start building
-const buildProcess = child_process.spawn('npm', ['run', 'build'], {
+const buildProcess: ChildProcess = spawn('npm', ['run', 'build'], {
   env: {
     ...process.env,
-    LOCAL_IP: address,
+    LOCAL_IP: address,  // Ensure this is properly assigned
   },
-  stdio: [0, 1, 2],
+  stdio: [0, 1, 2],  // Inherit standard input/output/error
 });
 
 startServerProcess();
