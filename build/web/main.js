@@ -4,11 +4,14 @@ import * as utils from '~/common/utils';
 import { CustomSnake, Movement, Snake } from '~/element/Snake';
 import { GameMap } from '~/framework/GameMap';
 import { Observer } from '~/framework/Observer';
+import { io } from "socket.io-client";
+
 if (module && module.hot) {
     module.hot.accept(() => {
         location.reload();
     });
 }
+
 const canvas = document.getElementById('cas');
 let isInit = false;
 // player id
@@ -29,37 +32,35 @@ const mouseCoords = {};
 const snakes = new Map();
 // save food object
 const foods = [];
-// websocket
-const ws = new WebSocket(`ws://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`);
-ws.binaryType = 'arraybuffer';
-// websocket connected
-ws.onopen = () => {
+
+// socket.io
+const socket = io(`http://${process.env.LOCAL_IP || '127.0.0.1'}:${config.socketPort}`);
+
+// socket connected
+socket.on('connect', () => {
     sendData(config.CMD_INIT, utils.VIEW_TYPE, {
         width: vWidth,
         height: vHeight,
     });
-};
-ws.onerror = () => {
+});
+
+// socket error handling
+socket.on('connect_error', () => {
     console.log('error');
-};
-ws.onclose = () => {
+});
+
+// socket disconnected
+socket.on('disconnect', () => {
     if (isInit) {
         return;
     }
     const x = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
     const y = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
     initGame(x, y);
-};
+});
+
 // receive data
-ws.onmessage = (e) => {
-    let data;
-    const buf = e.data;
-    if (buf instanceof ArrayBuffer) {
-        data = utils.decode(buf);
-    }
-    else {
-        data = JSON.parse(buf);
-    }
+socket.on('message', (data) => {
     let packet;
     switch (data.opt) {
         case config.CMD_INIT_ACK:
@@ -77,13 +78,11 @@ ws.onmessage = (e) => {
                 if (item.type === utils.SNAKE_TYPE) {
                     if (playerId === packet.id) {
                         return;
-                    }
-                    else if (snakes.has(packet.id)) {
+                    } else if (snakes.has(packet.id)) {
                         snake = snakes.get(packet.id);
                         const movement = new Movement(packet.x, packet.y, packet.speed, packet.angle);
                         snake.sync(packet.size, packet.length, movement);
-                    }
-                    else {
+                    } else {
                         snake = new CustomSnake({
                             x: packet.x,
                             y: packet.y,
@@ -94,8 +93,7 @@ ws.onmessage = (e) => {
                         });
                         snakes.set(packet.id, snake);
                     }
-                }
-                else if (item.type === utils.FOOD_TYPE) {
+                } else if (item.type === utils.FOOD_TYPE) {
                     // sync food
                 }
             });
@@ -109,7 +107,8 @@ ws.onmessage = (e) => {
         default:
             break;
     }
-};
+});
+
 /**
  * game init
  */
@@ -118,8 +117,7 @@ function initGame(x, y) {
     // create player
     if (isObserver) {
         player = new Observer(gameMap.width / 2, gameMap.height / 2);
-    }
-    else {
+    } else {
         player = new Snake({
             x, y,
             size: 30,
@@ -128,38 +126,16 @@ function initGame(x, y) {
             fillColor: '#000',
         });
     }
-    // for (let i = 0; i < 2000; i++) {
-    //   const point = ~~(Math.random() * 30 + 50);
-    //   const size = ~~(point / 3);
-    //   foods.push(new Food({
-    //     size, point,
-    //     x: ~~(Math.random() * (gameMap.width - 2 * size) + size),
-    //     y: ~~(Math.random() * (gameMap.height - 2 * size) + size),
-    //   }));
-    // }
     binding();
     animate();
 }
-/**
- * collision check
- */
-function collision(dom, dom2, isRect) {
-    const disX = dom.x - dom2.x;
-    const disY = dom.y - dom2.y;
-    const dw = dom.width + dom2.width;
-    if (Math.abs(disX) > dw || Math.abs(disY) > dom.height + dom2.height) {
-        return false;
-    }
-    return isRect ? true : (Math.hypot(disX, disY) < dw / 2);
-}
+
 // animation loop
 let timeout = 0;
 let time = +new Date();
 function animate() {
     const newTime = +new Date();
-    const snakePlayer = player instanceof Snake
-        ? player
-        : null;
+    const snakePlayer = player instanceof Snake ? player : null;
     if (newTime - time > timeout) {
         time = newTime;
         // update map and player
@@ -184,12 +160,6 @@ function animate() {
                 });
             }
         });
-        // if (mouseCoords.x) {
-        //   gameMap.ctx.beginPath();
-        //   gameMap.ctx.moveTo((<Snake>player).header.paintX, (<Snake>player).header.paintY);
-        //   gameMap.ctx.lineTo(mouseCoords.x, mouseCoords.y);
-        //   gameMap.ctx.stroke();
-        // }
         if (snakePlayer && playerId) {
             sendData(config.CMD_SYNC_MAIN_COORD, utils.SNAKE_TYPE, {
                 id: playerId,
@@ -203,25 +173,25 @@ function animate() {
     }
     animationId = window.requestAnimationFrame(animate);
 }
+
 // send data
 function sendData(opt, type, packet) {
-    ws.send(utils.encode({
+    socket.emit('message', utils.encode({
         opt,
         data: { type, packet },
     }));
 }
+
 /**
  * event binding
  */
 function binding() {
-    // finger|mouse move event
     function mousemove(e) {
         e.preventDefault();
         if (e.touches) {
             mouseCoords.x = e.touches[0].pageX;
             mouseCoords.y = e.touches[0].pageY;
-        }
-        else {
+        } else {
             const evt = e || window.event;
             mouseCoords.x = evt.clientX;
             mouseCoords.y = evt.clientY;
@@ -240,22 +210,17 @@ function binding() {
                 player.stop();
             });
         }
-    }
-    else {
-        // change snake's direction when mouse moving
+    } else {
         window.addEventListener('mousemove', mousemove);
         if (player instanceof Snake) {
             const pl = player;
-            // speed up
             window.addEventListener('mousedown', () => {
                 pl.speedUp();
             });
-            // speed down
             window.addEventListener('mouseup', () => {
                 pl.speedDown();
             });
-        }
-        else {
+        } else {
             window.onmousedown = (e) => {
                 let startX = e.pageX;
                 let startY = e.pageY;
