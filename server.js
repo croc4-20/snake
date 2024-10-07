@@ -28,13 +28,6 @@ app.use((req, res, next) => {
 });
 
 
-// Fallback route for the SPA
-app.get('*', (req, res) => {
-  console.log('Serving fallback index.html');
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-
 // Serve Slither game static files
 // app.use('/miniGames/slitherSnake/slither/dist', express.static(path.join(__dirname, 'miniGames/slitherSnake/slither/dist')));
 
@@ -91,7 +84,12 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/miniGames/slitherSnake/slither/web/index.html', (req, res) => {
+// app.get('/miniGames/slitherSnake/slither/web/index.html', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
+// Fallback route for the SPA
+app.get('*', (req, res) => {
+  console.log('Serving fallback index.html');
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
