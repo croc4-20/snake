@@ -18,8 +18,7 @@ export default {
     filename: 'slither.bundle.js',
     path: path.resolve(__dirname, 'build'),
     clean: true,
-    publicPath: '/build',
-    chunkFilename: '[name].chunk.js',
+    publicPath: '/build'
   },
   module: {
     rules: [
@@ -93,6 +92,8 @@ export default {
     }),
     new DefinePlugin({
       'process.env.LOCAL_IP': JSON.stringify(process.env.LOCAL_IP || '127.0.0.1'),  // Defaults to localhost if undefined
+      'process.env.HOST': JSON.stringify(process.env.HOST || 'https://your-heroku-app-url.herokuapp.com'),
+
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
       // Add any other environment variables here
     }),
