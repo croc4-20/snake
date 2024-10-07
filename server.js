@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 // Serve main application
 
 
-app.use(express.static(path.join(__dirname, 'build')));
+app.use('/build', express.static(path.join(__dirname, 'build')));
 
 app.use((req, res, next) => {
   if (req.url.endsWith('.ts')) {
