@@ -52,41 +52,41 @@ io.on('connection', (socket) => {
 
   socket.on('customEvent', (data) => {
     const { opt, data: { type, packet } } = data;
-
+    const config = {
+      CMD_INIT_ACK: 'CMD_INIT_ACK',
+      CMD_SYNC_MAIN_COORD: 'CMD_SYNC_MAIN_COORD',
+      CMD_SYNC_OTHER_COORD: 'CMD_SYNC_OTHER_COORD',
+      CMD_LOSE_CONNECT: 'CMD_LOSE_CONNECT'
+    };
     // Log the received data
     console.log('Received event:', { opt, type, packet });
 
     // Handle different commands based on 'opt'
     switch (opt) {
-      case config.CMD_INIT_ACK:
-        console.log('CMD_INIT_ACK received');
-        // Handle the init acknowledgement
-        handleInitAck(socket, packet);
-        break;
+  case config.CMD_INIT_ACK:
+    console.log('CMD_INIT_ACK received');
+    handleInitAck(socket, packet);
+    break;
 
-      case config.CMD_SYNC_MAIN_COORD:
-        console.log('CMD_SYNC_MAIN_COORD received');
-        // Handle the main coordinates synchronization
-        handleSyncMainCoord(socket, packet);
-        break;
+  case config.CMD_SYNC_MAIN_COORD:
+    console.log('CMD_SYNC_MAIN_COORD received');
+    handleSyncMainCoord(socket, packet);
+    break;
 
-      case config.CMD_SYNC_OTHER_COORD:
-        console.log('CMD_SYNC_OTHER_COORD received');
-        // Handle the other coordinates synchronization
-        handleSyncOtherCoord(socket, packet);
-        break;
+  case config.CMD_SYNC_OTHER_COORD:
+    console.log('CMD_SYNC_OTHER_COORD received');
+    handleSyncOtherCoord(socket, packet);
+    break;
 
-      case config.CMD_LOSE_CONNECT:
-        console.log('CMD_LOSE_CONNECT received');
-        // Handle the lost connection scenario
-        handleLoseConnect(socket, packet);
-        break;
+  case config.CMD_LOSE_CONNECT:
+    console.log('CMD_LOSE_CONNECT received');
+    handleLoseConnect(socket, packet);
+    break;
 
-      default:
-        console.log('Unknown command received:', opt);
-        break;
-    }
-  });
+  default:
+    console.log('Unknown command received:', opt);
+    break;
+}
 
   // Handle Slither game events
   socket.on('slitherEvent', (data) => {
