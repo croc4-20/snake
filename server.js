@@ -88,7 +88,14 @@ io.on('connection', (socket) => {
 //   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });
 // Fallback route for the SPA
-app.get('*', (req, res) => {
+app.get('*', (req, res, next) => {
+  // Check if the file exists in the 'build' directory
+  if (req.url.startsWith('/build')) {
+    // File is part of the build directory, let static middleware handle it
+    return next();
+  }
+  
+  // If the file doesn't exist, serve index.html for SPA routing
   console.log('Serving fallback index.html');
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
