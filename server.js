@@ -95,7 +95,7 @@ app.get('*', (req, res) => {
 
 
 
-const PORT = process.env.PORT; 
+const PORT = process.env.PORT || 3000;
 if (!PORT) {
   throw new Error('No PORT environment variable found');
 }
