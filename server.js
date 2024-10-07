@@ -14,6 +14,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Serve main application
+function handleInit(socket, packet) {
+  // Example logic for initialization
+  console.log('Handling CMD_INIT with packet:', packet);
+
+  // You can also emit an acknowledgment back to the client if needed
+  socket.emit('customEventAck', { message: 'Initialization complete', packet });
+}
 
 
 app.use('/build', express.static(path.join(__dirname, 'build')));
