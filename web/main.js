@@ -61,7 +61,7 @@ socket.on('disconnect', () => {
 // receive data
 socket.on('message', (data) => 
 {
-    let data;
+    
     const buf = e.data;
     if (buf instanceof ArrayBuffer) {
         data = utils.decode(buf);
