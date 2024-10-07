@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 app.use((req, res, next) => {
   if (req.url.endsWith('.ts')) {
+    console.log('file ends with ts, serving js');
     res.setHeader('Content-Type', 'application/javascript');
   }
   next();
@@ -81,10 +82,10 @@ io.on('connection', (socket) => {
   });
 });
 
-// Route for Slither game's index.html
 app.get('/miniGames/slitherSnake/slither/web/index.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'miniGames/slitherSnake/slither/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
 
 // Fallback route for SPA
 app.get('*', (req, res) => {
