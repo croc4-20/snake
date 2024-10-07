@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "clean": "rimraf build",
-    "start": "npm run build && npm run copy-config && NODE_ENV=production node ./build/server/index.js",
+    "start": "npm run build && npm run copy-config && NODE_ENV=production node server.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
     "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
