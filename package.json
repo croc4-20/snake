@@ -8,7 +8,7 @@
     "start": "npm run build && NODE_ENV=production node server.js",
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
-    "build": "tsc && webpack --config webpack.slither.config.mjs.js",
+    "build": "npm run clean && tsc && webpack --config webpack.slither.config.mjs.js",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production"
   },
   "type": "module",
