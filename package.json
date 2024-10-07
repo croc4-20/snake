@@ -10,7 +10,7 @@
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
     "build": "tsc && webpack --config webpack.slither.config.mjs.js && npm run copy-server",
     "release": "webpack --config webpack.slither.config.mjs.js --mode production",
-  "copy-server": "copyfiles -u 1 server.js build/server",
+    "copy-server": "copyfiles server.js build/server",
     "copy-config": "copyfiles -u 1 'web/common/*.js' build/web/common 'web/element/*.js' build/web/element 'web/framework/*.js' build/web/framework 'web/libs/*.js' build/web/libs"
   },
   "type": "module",
