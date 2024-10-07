@@ -17,12 +17,6 @@ const __dirname = path.dirname(__filename);
 
 
 app.use(express.static(path.join(__dirname, 'build')));
-
-// Fallback route for the SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
 app.use((req, res, next) => {
   if (req.url.endsWith('.ts')) {
     console.log('file ends with ts, serving js');
@@ -31,6 +25,13 @@ app.use((req, res, next) => {
   console.log("requrl not .ts calling next");
   next();
 });
+
+
+// Fallback route for the SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 // Serve Slither game static files
 // app.use('/miniGames/slitherSnake/slither/dist', express.static(path.join(__dirname, 'miniGames/slitherSnake/slither/dist')));
