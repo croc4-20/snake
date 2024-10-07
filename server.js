@@ -17,18 +17,20 @@ const __dirname = path.dirname(__filename);
 
 
 app.use(express.static(path.join(__dirname, 'build')));
+
 app.use((req, res, next) => {
   if (req.url.endsWith('.ts')) {
     console.log('file ends with ts, serving js');
     res.setHeader('Content-Type', 'application/javascript');
   }
-  console.log("requrl not .ts calling next");
+  console.log(`Serving request for ${req.url}`);
   next();
 });
 
 
 // Fallback route for the SPA
 app.get('*', (req, res) => {
+  console.log('Serving fallback index.html');
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
