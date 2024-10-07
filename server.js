@@ -64,6 +64,12 @@ app.get('*', (req, res, next) => {
 
     // Handle different commands based on 'opt'
     switch (opt) {
+      case config.CMD_INIT:  // Handle CMD_INIT (100)
+        console.log('CMD_INIT received');
+        // Handle init command (you can add your initialization logic here)
+        handleInit(socket, packet);  // Add an appropriate handler if necessary
+        break;
+
       case config.CMD_INIT_ACK:
         console.log('CMD_INIT_ACK received');
         handleInitAck(socket, packet);
@@ -88,7 +94,7 @@ app.get('*', (req, res, next) => {
         console.log('Unknown command received:', opt);
         break;
     }
-  }); 
+  });
 
   // Handle Slither game events
   socket.on('slitherEvent', (data) => {
