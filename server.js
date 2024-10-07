@@ -47,7 +47,7 @@ app.get('*', (req, res, next) => {
 // app.use('/miniGames/slitherSnake/slither/dist', express.static(path.join(__dirname, 'miniGames/slitherSnake/slither/dist')));
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
+  io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
   socket.on('customEvent', (data) => {
@@ -63,30 +63,31 @@ io.on('connection', (socket) => {
 
     // Handle different commands based on 'opt'
     switch (opt) {
-  case config.CMD_INIT_ACK:
-    console.log('CMD_INIT_ACK received');
-    handleInitAck(socket, packet);
-    break;
+      case config.CMD_INIT_ACK:
+        console.log('CMD_INIT_ACK received');
+        handleInitAck(socket, packet);
+        break;
 
-  case config.CMD_SYNC_MAIN_COORD:
-    console.log('CMD_SYNC_MAIN_COORD received');
-    handleSyncMainCoord(socket, packet);
-    break;
+      case config.CMD_SYNC_MAIN_COORD:
+        console.log('CMD_SYNC_MAIN_COORD received');
+        handleSyncMainCoord(socket, packet);
+        break;
 
-  case config.CMD_SYNC_OTHER_COORD:
-    console.log('CMD_SYNC_OTHER_COORD received');
-    handleSyncOtherCoord(socket, packet);
-    break;
+      case config.CMD_SYNC_OTHER_COORD:
+        console.log('CMD_SYNC_OTHER_COORD received');
+        handleSyncOtherCoord(socket, packet);
+        break;
 
-  case config.CMD_LOSE_CONNECT:
-    console.log('CMD_LOSE_CONNECT received');
-    handleLoseConnect(socket, packet);
-    break;
+      case config.CMD_LOSE_CONNECT:
+        console.log('CMD_LOSE_CONNECT received');
+        handleLoseConnect(socket, packet);
+        break;
 
-  default:
-    console.log('Unknown command received:', opt);
-    break;
-}
+      default:
+        console.log('Unknown command received:', opt);
+        break;
+    }
+  }); 
 
   // Handle Slither game events
   socket.on('slitherEvent', (data) => {
@@ -111,6 +112,7 @@ if (!PORT) {
   throw new Error('No PORT environment variable found');
 }
 
-server.listen(PORT, () => {
+server.listen(PORT, () => 
+{
   console.log(`Server is running on port ${PORT}`);
 });
