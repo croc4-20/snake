@@ -56,9 +56,7 @@ const foods: Food[] = [];
 
 // websocket
 
-const socket = io(`http://${process.env.LOCAL_IP}:${config.socketPort}`, {
-  transports: ['websocket'],
-});
+const socket = io('slither-d8bb4b2b5d45.herokuapp.com');
 
 // websocket connected
 socket.on('connect', () => {

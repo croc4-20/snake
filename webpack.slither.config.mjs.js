@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 
 export default {
   context: path.resolve(__dirname, 'web'),
-  entry: '.web/main.ts',
+  entry: '/main.ts',
   output: {
     filename: 'slither.bundle.js',
     path: path.resolve(__dirname, 'build'),
