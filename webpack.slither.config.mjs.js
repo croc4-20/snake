@@ -16,9 +16,9 @@ export default {
   entry: './main.ts',
   output: {
     filename: 'slither.bundle.js',
-    path: path.resolve(__dirname, 'dist/slither'),
+    path: path.resolve(__dirname, 'build'),
     clean: true,
-    publicPath: 'dist/slither'
+    publicPath: '/build/'
   },
   module: {
     rules: [

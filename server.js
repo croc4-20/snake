@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 
 // Serve main application
 
-app.use(express.static(path.join(__dirname, 'dist/slither')));
+app.use(express.static(path.join(__dirname, 'build')));
 
 
 app.use((req, res, next) => {
