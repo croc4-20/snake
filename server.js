@@ -83,12 +83,12 @@ io.on('connection', (socket) => {
 
 // Route for Slither game's index.html
 app.get('/miniGames/slitherSnake/slither/web/index.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'miniGames/slitherSnake/slither/dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'miniGames/slitherSnake/slither/build', 'index.html'));
 });
 
 // Fallback route for SPA
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 const PORT = process.env.PORT; 
