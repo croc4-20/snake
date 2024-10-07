@@ -15,14 +15,20 @@ const __dirname = path.dirname(__filename);
 
 // Serve main application
 
+
 app.use(express.static(path.join(__dirname, 'build')));
 
+// Fallback route for the SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.use((req, res, next) => {
   if (req.url.endsWith('.ts')) {
     console.log('file ends with ts, serving js');
     res.setHeader('Content-Type', 'application/javascript');
   }
+  console.log("requrl not .ts calling next");
   next();
 });
 
@@ -87,10 +93,6 @@ app.get('/miniGames/slitherSnake/slither/web/index.html', (req, res) => {
 });
 
 
-// Fallback route for SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 
 const PORT = process.env.PORT; 
 if (!PORT) {
