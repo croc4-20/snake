@@ -33,9 +33,12 @@ app.get('/build/*', (req, res) => {
 });
 
 // Serve index.html only for routes that don't match a file
-app.get('*', (req, res) => {
-  console.log('Serving fallback index.html');
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get('*', (req, res, next) => {
+  if (req.url.endsWith('.js')) {
+    next(); // Let the static middleware handle it
+  } else {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  }
 });
 
 
