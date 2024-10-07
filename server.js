@@ -26,6 +26,18 @@ app.use((req, res, next) => {
   console.log(`Serving request for ${req.url}`);
   next();
 });
+app.get('/build/*', (req, res) => {
+  const requestedFile = path.join(__dirname, req.path);
+  console.log(`Serving specific file: ${requestedFile}`);
+  res.sendFile(requestedFile);
+});
+
+// Serve index.html only for routes that don't match a file
+app.get('*', (req, res) => {
+  console.log('Serving fallback index.html');
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 
 // Serve Slither game static files
@@ -88,21 +100,10 @@ io.on('connection', (socket) => {
 //   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });
 // Fallback route for the SPA
-app.get('*', (req, res, next) => {
-  // Check if the file exists in the 'build' directory
-  if (req.url.startsWith('/build')) {
-    // File is part of the build directory, let static middleware handle it
-    return next();
-  }
-  
-  // If the file doesn't exist, serve index.html for SPA routing
-  console.log('Serving fallback index.html');
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
 
 
 const PORT = process.env.PORT || 3000;
+console.log('Port found :', PORT);
 if (!PORT) {
   throw new Error('No PORT environment variable found');
 }
