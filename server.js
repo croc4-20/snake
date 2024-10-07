@@ -53,10 +53,11 @@ app.get('*', (req, res, next) => {
   socket.on('customEvent', (data) => {
     const { opt, data: { type, packet } } = data;
     const config = {
-      CMD_INIT_ACK: 'CMD_INIT_ACK',
-      CMD_SYNC_MAIN_COORD: 'CMD_SYNC_MAIN_COORD',
-      CMD_SYNC_OTHER_COORD: 'CMD_SYNC_OTHER_COORD',
-      CMD_LOSE_CONNECT: 'CMD_LOSE_CONNECT'
+      CMD_INIT: 100,
+      CMD_INIT_ACK: 101,
+      CMD_SYNC_MAIN_COORD: 102,
+      CMD_SYNC_OTHER_COORD: 103,
+      CMD_LOSE_CONNECT: 104
     };
     // Log the received data
     console.log('Received event:', { opt, type, packet });
