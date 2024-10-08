@@ -18,7 +18,7 @@ export default {
   filename: '[name].[contenthash].js',  // Add contenthash for cache-busting
   path: path.resolve(__dirname, 'build'),
   clean: true,
-  publicPath: '/build',
+  publicPath: '/',
 },
   module: {
     rules: [
