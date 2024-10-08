@@ -35,13 +35,13 @@ app.use(express.static(path.join(__dirname, 'build'), {
 
 // Serve index.html only for routes that don't match a file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'), {
+  const indexPath = path.join(__dirname, 'build', 'index.html');
+  res.sendFile(indexPath, {
     headers: {
       'Cache-Control': 'no-cache',  // Ensure index.html is not cached
     },
   });
 });
-
 
 
 // Serve Slither game static files
