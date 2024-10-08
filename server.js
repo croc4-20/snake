@@ -89,12 +89,14 @@ let gameState = {
   CMD_LOSE_CONNECT: 104,
 };
 function generateFoodItems() {
+  console.log('generateFoodItems funbctuibebterbed');
   for (let i = 0; i < 2000; i++) {
     const size = Math.floor(Math.random() * 30 + 20);
     const x = Math.floor(Math.random() * (config.MAP_WIDTH - size * 2) + size);
     const y = Math.floor(Math.random() * (config.MAP_HEIGHT - size * 2) + size);
     gameState.foodItems.push({ x, y, size });
   }
+  console.log('gameState after adding food in generateFoodItems function', gameState);
 }
 
 // Start the game loop for broadcasting game state updates
