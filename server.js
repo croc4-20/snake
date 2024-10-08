@@ -21,31 +21,25 @@ function handleInit(socket, packet) {
   // You can also emit an acknowledgment back to the client if needed
   socket.emit('customEventAck', { message: 'Initialization complete', packet });
 }
+app.use(express.static(path.join(__dirname, 'build'), {
+  maxAge: '1y',  // Cache static assets for one year
+  immutable: true,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('index.html')) {
+      res.setHeader('Cache-Control', 'no-cache');  // Prevent caching of index.html
+    }
+  },
+}));
 
 
-app.use('/build', express.static(path.join(__dirname, 'build')));
-
-app.use((req, res, next) => {
-  if (req.url.endsWith('.ts')) {
-    console.log('file ends with ts, serving js');
-    res.setHeader('Content-Type', 'application/javascript');
-  }
-  console.log(`Serving request for ${req.url}`);
-  next();
-});
-app.get('/build/*', (req, res) => {
-  const requestedFile = path.join(__dirname, req.path);
-  console.log(`Serving specific file: ${requestedFile}`);
-  res.sendFile(requestedFile);
-});
 
 // Serve index.html only for routes that don't match a file
-app.get('*', (req, res, next) => {
-  if (req.url.endsWith('.js')) {
-    next(); // Let the static middleware handle it
-  } else {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  }
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'), {
+    headers: {
+      'Cache-Control': 'no-cache',  // Ensure index.html is not cached
+    },
+  });
 });
 
 
