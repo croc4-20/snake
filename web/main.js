@@ -60,6 +60,64 @@ socket.on('disconnect', () => {
     const y = ~~(Math.random() * (config.MAP_WIDTH - 100) + 100 / 2);
     initGame(x, y);
 });
+socket.on('customEvent', (data) => {
+  const { opt, data: { type, packet } } = data;
+
+  switch (opt) {
+    case config.CMD_INIT_ACK:
+      playerId = packet.id;
+      initGame(packet.x, packet.y, packet.foodItems);
+      break;
+
+    case config.CMD_LOSE_CONNECT:
+      if (snakes.has(packet.id)) {
+        snakes.delete(packet.id);
+      }
+      break;
+
+    // Add other cases as needed
+
+    default:
+      break;
+  }
+});
+
+socket.on('gameUpdate', (data) => {
+  // Update food items
+  foods.length = 0; // Clear existing food items
+  data.foodItems.forEach((item) => {
+    const food = new Food({
+      x: item.x,
+      y: item.y,
+      size: item.size,
+      // ... other properties ...
+    });
+    foods.push(food);
+  });
+
+  // Update other players
+  data.players.forEach((playerData) => {
+    if (playerData.id !== playerId) {
+      if (snakes.has(playerData.id)) {
+        // Update existing snake
+        const snake = snakes.get(playerData.id);
+        const movement = new Movement(playerData.x, playerData.y, playerData.speed, playerData.angle);
+        snake.sync(playerData.size, playerData.length, movement);
+      } else {
+        // Create new snake
+        const snake = new CustomSnake({
+          x: playerData.x,
+          y: playerData.y,
+          angle: playerData.angle,
+          size: playerData.size,
+          length: playerData.length,
+          fillColor: '#666',
+        });
+        snakes.set(playerData.id, snake);
+      }
+    }
+  });
+});
 // receive data
 socket.on('message', (data) => 
 {
@@ -124,33 +182,35 @@ socket.on('message', (data) =>
 /**
  * game init
  */
-function initGame(x, y) {
-    console.log('initGame functino entered');
-    isInit = true;
-    // create player
-    if (isObserver) {
-        player = new Observer(exports.gameMap.width / 2, exports.gameMap.height / 2);
-    }
-    else {
-        player = new Snake({
-            x, y,
-            size: 30,
-            length: 280,
-            angle: Math.random() * 2 * Math.PI,
-            fillColor: '#000',
-        });
-    }
-    // for (let i = 0; i < 2000; i++) {
-    //   const point = ~~(Math.random() * 30 + 50);
-    //   const size = ~~(point / 3);
-    //   foods.push(new Food({
-    //     size, point,
-    //     x: ~~(Math.random() * (gameMap.width - 2 * size) + size),
-    //     y: ~~(Math.random() * (gameMap.height - 2 * size) + size),
-    //   }));
-    // }
-    binding();
-    animate();
+function initGame(x, y, foodItems) {
+  isInit = true;
+
+  // Create player
+  if (isObserver) {
+    player = new Observer(exports.gameMap.width / 2, exports.gameMap.height / 2);
+  } else {
+    player = new Snake({
+      x, y,
+      size: 30,
+      length: 280,
+      angle: Math.random() * 2 * Math.PI,
+      fillColor: '#000',
+    });
+  }
+
+  // Initialize food items
+  foodItems.forEach((item) => {
+    const food = new Food({
+      x: item.x,
+      y: item.y,
+      size: item.size,
+      // ... other properties ...
+    });
+    foods.push(food);
+  });
+
+  binding();
+  animate();
 }
 /**
  * collision check
