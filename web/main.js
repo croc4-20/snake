@@ -125,6 +125,7 @@ socket.on('message', (data) =>
  * game init
  */
 function initGame(x, y) {
+    console.log('initGame functino entered');
     isInit = true;
     // create player
     if (isObserver) {
