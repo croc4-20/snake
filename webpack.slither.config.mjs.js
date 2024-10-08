@@ -14,12 +14,12 @@ const __dirname = path.dirname(__filename);
 export default {
   context: path.resolve(__dirname, 'web'),
   entry: './main.ts',
-  output: {
-    filename: 'slither.bundle.js',
-    path: path.resolve(__dirname, 'build'),
-    clean: true,
-    publicPath: '/build'
-  },
+ output: {
+  filename: '[name].[contenthash].js',  // Add contenthash for cache-busting
+  path: path.resolve(__dirname, 'build'),
+  clean: true,
+  publicPath: '/build',
+},
   module: {
     rules: [
       {
