@@ -14,13 +14,42 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Serve main application
+// Handler for CMD_INIT
 function handleInit(socket, packet) {
-  // Example logic for initialization
-  console.log('Handling CMD_INIT with packet:', packet);
+  // Assign a unique player ID (using socket ID)
+  const playerId = socket.id;
 
-  // You can also emit an acknowledgment back to the client if needed
-  socket.emit('customEventAck', { message: 'Initialization complete', packet });
+  // Initialize player data
+  const playerData = {
+    id: playerId,
+    x: Math.random() * config.MAP_WIDTH,
+    y: Math.random() * config.MAP_HEIGHT,
+    size: 30,      // Initial size
+    length: 280,   // Initial length
+    angle: Math.random() * 2 * Math.PI,
+    speed: 0,      // Initial speed
+  };
+
+  // Store player data in the game state
+  gameState.players.set(playerId, playerData);
+
+  // Send initialization acknowledgment to the client
+  socket.emit('customEvent', {
+    opt: config.CMD_INIT_ACK,
+    data: {
+      type: 'initAck',
+      packet: {
+        id: playerId,
+        x: playerData.x,
+        y: playerData.y,
+        foodItems: gameState.foodItems, // Send initial food items
+      },
+    },
+  });
+
+  console.log(`Player ${playerId} initialized at (${playerData.x}, ${playerData.y})`);
 }
+
 app.use(express.static(path.join(__dirname, 'build'), {
   maxAge: '1y',  // Cache static assets for one year
   immutable: true,
@@ -109,6 +138,11 @@ generateFoodItems();
         console.log('CMD_INIT_ACK received');
         handleInitAck(socket, packet);
         break;
+        case config.CMD_LOSE_CONNECT:
+      if (snakes.has(packet.id)) {
+        snakes.delete(packet.id);
+      }
+      break;
 
       case config.CMD_SYNC_MAIN_COORD:
         console.log('CMD_SYNC_MAIN_COORD received');
@@ -130,6 +164,43 @@ generateFoodItems();
         break;
     }
   });
+  socket.on('gameUpdate', (data) => {
+  // Update food items
+    let foods = [];
+  foods.length = 0; // Clear existing food items
+  data.foodItems.forEach((item) => {
+    const food = new Food({
+      x: item.x,
+      y: item.y,
+      size: item.size,
+      // ... other properties ...
+    });
+    foods.push(food);
+  });
+
+  // Update other players
+  data.players.forEach((playerData) => {
+    if (playerData.id !== playerId) {
+      if (snakes.has(playerData.id)) {
+        // Update existing snake
+        const snake = snakes.get(playerData.id);
+        const movement = new Movement(playerData.x, playerData.y, playerData.speed, playerData.angle);
+        snake.sync(playerData.size, playerData.length, movement);
+      } else {
+        // Create new snake
+        const snake = new CustomSnake({
+          x: playerData.x,
+          y: playerData.y,
+          angle: playerData.angle,
+          size: playerData.size,
+          length: playerData.length,
+          fillColor: '#666',
+        });
+        snakes.set(playerData.id, snake);
+      }
+    }
+  });
+});
 
   // Handle Slither game events
   socket.on('slitherEvent', (data) => {
@@ -142,40 +213,40 @@ generateFoodItems();
     handleDisconnect(socket);
   });
 });
-function handleInit(socket, packet) {
-  // Assign a unique player ID (using socket ID)
-  const playerId = socket.id;
+// function handleInit(socket, packet) {
+//   // Assign a unique player ID (using socket ID)
+//   const playerId = socket.id;
 
-  // Initialize player data
-  const playerData = {
-    id: playerId,
-    x: Math.random() * config.MAP_WIDTH,
-    y: Math.random() * config.MAP_HEIGHT,
-    size: 30,      // Initial size
-    length: 280,   // Initial length
-    angle: Math.random() * 2 * Math.PI,
-    speed: 0,      // Initial speed
-  };
+//   // Initialize player data
+//   const playerData = {
+//     id: playerId,
+//     x: Math.random() * config.MAP_WIDTH,
+//     y: Math.random() * config.MAP_HEIGHT,
+//     size: 30,      // Initial size
+//     length: 280,   // Initial length
+//     angle: Math.random() * 2 * Math.PI,
+//     speed: 0,      // Initial speed
+//   };
 
-  // Store player data in the game state
-  gameState.players.set(playerId, playerData);
+//   // Store player data in the game state
+//   gameState.players.set(playerId, playerData);
 
-  // Send initialization acknowledgment to the client
-  socket.emit('customEvent', {
-    opt: config.CMD_INIT_ACK,
-    data: {
-      type: 'initAck',
-      packet: {
-        id: playerId,
-        x: playerData.x,
-        y: playerData.y,
-        foodItems: gameState.foodItems, // Send initial food items
-      },
-    },
-  });
+//   // Send initialization acknowledgment to the client
+//   socket.emit('customEvent', {
+//     opt: config.CMD_INIT_ACK,
+//     data: {
+//       type: 'initAck',
+//       packet: {
+//         id: playerId,
+//         x: playerData.x,
+//         y: playerData.y,
+//         foodItems: gameState.foodItems, // Send initial food items
+//       },
+//     },
+//   });
 
-  console.log(`Player ${playerId} initialized at (${playerData.x}, ${playerData.y})`);
-}
+//   console.log(`Player ${playerId} initialized at (${playerData.x}, ${playerData.y})`);
+// }
 
 // Handler for CMD_SYNC_MAIN_COORD
 function handleSyncMainCoord(socket, packet) {
