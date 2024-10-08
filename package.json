@@ -9,7 +9,7 @@
     "dev": "webpack serve --open --config webpack.slither.config.mjs.js",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build",
     "build": "npm run clean && tsc && webpack --config webpack.slither.config.mjs.js",
-    "release": "webpack --config webpack.slither.config.mjs.js --mode production"
+    "release": "webpack --config webpack.slither.config.mjs.js"
   },
   "type": "module",
   "keywords": [
